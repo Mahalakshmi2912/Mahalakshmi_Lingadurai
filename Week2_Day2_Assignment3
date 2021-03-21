@@ -1,0 +1,67 @@
+package Week.day2;
+
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class Assignment3 {
+
+	public static void main(String[] args) throws InterruptedException {
+		// TODO Auto-generated method stub
+		WebDriverManager.chromedriver().setup();
+		ChromeDriver driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		// * 1. Launch URL "http://leaftaps.com/opentaps/control/login"
+		driver.get("http://leaftaps.com/opentaps/control/login");
+		// * 2. Enter UserName and Password Using Id Locator
+		driver.findElement(By.id("username")).sendKeys("DemoSalesManager");
+		driver.findElement(By.id("password")).sendKeys("crmsfa");
+		// * 3. Click on Login Button using Class Locator
+		driver.findElement(By.className("decorativeSubmit")).click();
+		// 4. Click on CRM/SFA Link
+		driver.findElement(By.linkText("CRM/SFA")).click();
+		// * 5. Click on contacts Button
+		driver.findElement(By.xpath("//a[@href='/crmsfa/control/contactsMain']")).click();
+		// * 6. Click on Find Contacts
+		driver.findElement(By.xpath("//a[@href='/crmsfa/control/findContacts']")).click();
+		// * 7. Click on the Email Field using Xpath Locator
+		driver.findElement(By.xpath("//span[text()='Email']")).click();
+		// * 8. Enter the email using any locator
+		driver.findElement(By.xpath("//input[@type='text'][@name='emailAddress']")).sendKeys("mmahalak12@gmail.com");
+		// * 9. Click on Find Contacts using Xpath Locator
+		driver.findElement(By.xpath("//button[text()='Find Contacts']")).click();
+		// * 10. Click on the First Resulting Contact
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("//div[@class='x-grid3-cell-inner x-grid3-col-partyId']/a[1]")).click();
+		// * 11. Get the Text of First Name
+		WebElement firstname = driver.findElement(By.id("viewContact_firstName_sp"));
+		System.out.println("The first name is: " + firstname.getText());
+		// * 12. Click on the Edit Button
+		driver.findElement(By.xpath("//a[text()='Edit']")).click();
+		// * 13. Select New Marketing Campaign as eCommerce Site Internal Campaign by
+		// using SelectByValue
+		WebElement marketingDropDown = driver.findElement(By.id("addMarketingCampaignForm_marketingCampaignId"));
+		Select dd1 = new Select(marketingDropDown);
+		dd1.selectByValue("9000");
+		// * 14. Click on the add button
+		driver.findElement(By.xpath("//input[@class='smallSubmit'][@value='Add']")).click();
+		// * 15. Enter Department Value as Selenium Automation Testing
+		driver.findElement(By.id("updateContactForm_departmentName")).sendKeys("Selenium Automation Testing");
+		// * 16. Click on the Update Button
+		driver.findElement(By.xpath("//input[@class='smallSubmit'][@value='Update']")).click();
+		// * 17. Get the text of Marketing campaign and Verify it
+		System.out.println(driver.findElement(By.xpath("//a[text()='eCommerce Site Internal Campaign (9000)']")).getText());
+		// verify Title of the Current page
+		String title = driver.getTitle();
+		System.out.println("The title of the page is : " + title);
+
+	}
+
+}
+
