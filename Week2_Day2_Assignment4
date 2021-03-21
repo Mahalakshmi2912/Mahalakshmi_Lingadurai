@@ -1,0 +1,55 @@
+package Week.day2;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class Assignment4 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		WebDriverManager.chromedriver().setup();
+		ChromeDriver driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		// * 1. Launch URL "http://leaftaps.com/opentaps/control/login"
+		driver.get("http://leaftaps.com/opentaps/control/login");
+		// * 2. Enter UserName and Password Using Xpath Locator
+		driver.findElement(By.xpath("//input[@id='username']")).sendKeys("DemoSalesManager");
+		driver.findElement(By.xpath("//input[@id='password']")).sendKeys("crmsfa");
+		// * 3. Click on Login Button using Xpath Locator
+		driver.findElement(By.xpath("//input[@value='Login']")).click();
+		// * 4. Click on CRM/SFA Link
+		driver.findElement(By.linkText("CRM/SFA")).click();
+		// * 5. Click on Oppurtunites Button
+		driver.findElement(By.xpath("//a[text()='Create Opportunity']")).click();
+		// * 6. Click on Find Oppurtunites using Xpath Locator
+		driver.findElement(By.xpath("//a[text()='Find Opportunities']")).click();
+		//* 7. Get the List of Oppurtunites available in Oppurtunity id usinf Xpath Locator
+		List<WebElement> oppurtunites= driver.findElements(By.xpath("//table[contains(@class,'-row-table')]/tbody/tr/td//a[contains(text(),'DemoOpportunity')]"));
+		int count = oppurtunites.size();
+		System.out.println("The total number of opportunities is :" + count);
+		for(WebElement oppurtunitesText : oppurtunites)
+		{
+			System.out.println(oppurtunitesText.getText());
+		}
+		// * 8. Get the Title of the Page and verify it.
+		String titleOfPage= driver.getTitle();
+		System.out.println("The totle of page is: " + titleOfPage);
+		if(titleOfPage.equals("Find Opportunities | opentaps CRM"))
+		{
+			System.out.println("The title got matched");
+		}
+		else
+		{
+			System.out.println("It got failed");
+		}
+
+	}
+
+}
