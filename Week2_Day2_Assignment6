@@ -1,0 +1,59 @@
+package Week.day2;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.Select;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class Assignment6 {
+
+	public static void main(String[] args) throws InterruptedException {
+		// TODO Auto-generated method stub
+		WebDriverManager.chromedriver().setup();
+		ChromeDriver driver = new ChromeDriver();
+		driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
+		driver.manage().window().maximize();
+		// Launch the url
+		driver.get("http://www.leafground.com/pages/Dropdown.html");
+		// Select training program using index
+		WebElement trainingProgramIndex = driver.findElement(By.id("dropdown1"));
+		Select dd1 = new Select(trainingProgramIndex);
+		dd1.selectByIndex(1);
+		System.out.println("The Selected training program using index is : " + dd1.getFirstSelectedOption().getText());
+		// Select training program using Text
+		WebElement trainingProgramInd = driver.findElement(By.name("dropdown2"));
+		Select dd2 = new Select(trainingProgramInd);
+		dd2.selectByValue("2");
+		System.out.println("The Selected training program using value is : " + dd2.getFirstSelectedOption().getText());
+		// Select training program using Value
+		WebElement trainingProgramValue = driver.findElement(By.id("dropdown3"));
+		Select dd3 = new Select(trainingProgramValue);
+		dd3.selectByVisibleText("UFT/QTP");
+		System.out.println("The Selected training program using value is : " + dd3.getFirstSelectedOption().getText());
+		// Get the number of dropdown options
+		List<WebElement> getNumberOfDropDown = driver.findElements(By.xpath("//select[@class='dropdown']/option"));
+		System.out.println("The Number of dropdown options: " + getNumberOfDropDown.size());
+		// select options
+		List<WebElement> ele = driver.findElements(By.xpath("//div[@id='contentblock']/section/div[5]/select/option"));
+		System.out.println(ele.size());
+		for (int i = 0; i < ele.size(); i++) {
+			String str = ele.get(i).getText();
+			if (str.contains("Loadrunner")) {
+				ele.get(i).click();
+			}
+		}
+		// Select your program
+		WebElement selectYourProgram = driver
+				.findElement(By.xpath("//div[@id='contentblock']/section/div[6]/select/option[3]"));
+		selectYourProgram.click();
+		System.out.println("The selected program is: " + selectYourProgram.getText());
+
+	}
+
+}
