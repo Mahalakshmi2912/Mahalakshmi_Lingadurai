@@ -1,0 +1,58 @@
+package Week3.day1;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import io.cucumber.messages.internal.com.google.protobuf.Duration;
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class RedbusAssignment {
+
+	public static void main(String[] args) throws InterruptedException {
+		// TODO Auto-generated method stub
+		WebDriverManager.chromedriver().setup();
+		ChromeDriver driver = new ChromeDriver();
+		driver.manage().timeouts().implicitlyWait(15,TimeUnit.SECONDS);
+		driver.manage().window().maximize();
+		//Hit URL
+		driver.get("https://www.redbus.in/");
+		//From dropdown
+		driver.findElement(By.xpath("//input[@id='src']")).sendKeys("c");
+		//timeouts to load
+		Thread.sleep(5000);
+		driver.findElement(By.xpath("//input[@id='src']")).sendKeys(Keys.ARROW_DOWN,Keys.ARROW_DOWN,Keys.ENTER);
+		//To dropdown
+		driver.findElement(By.xpath("//input[@id='dest']")).sendKeys("b");
+		//timeouts to load
+		Thread.sleep(2000);
+		//select Bengaluru
+		driver.findElement(By.xpath("//input[@id='dest']")).sendKeys(Keys.ARROW_DOWN,Keys.ENTER,Keys.TAB);
+		//Click on next
+		Thread.sleep(5000);
+		driver.findElement(By.xpath("//tr[@class='rb-monthHeader']/td[3]")).click();
+		//Select first date in the month of April
+		driver.findElement(By.xpath("//table[@class='rb-monthTable first last']//tr[3]/td[text()='1']")).click();
+		//Click on Search buses
+		driver.findElement(By.xpath("//button[@id='search_btn']")).click();
+		//Buses found
+		System.out.println("Total buses found: " + driver.findElement(By.xpath("//span[@class='w-60 d-block d-found']/span")).getText());
+		//Click close button on covid Pop up
+		driver.findElement(By.xpath("//div[@class='close']/i")).click();
+		Thread.sleep(3000);
+		//Choose only sleeper
+		driver.findElement(By.xpath("//div[@id='filter-block']//ul[3]/li[2]/label[1]")).click();
+		//Sleeper buses
+		System.out.println("Total sleeper buses: " + driver.findElement(By.xpath("//span[@class='w-60 d-block d-found']/span")).getText());
+		//Choose both sleeper+AC
+		driver.findElement(By.xpath("//div[@id='filter-block']//ul[3]/li[3]/label[1]")).click();
+		//Sleeper +AC buses
+		System.out.println("Total [sleeper+ AC] buses: " + driver.findElement(By.xpath("//span[@class='w-60 d-block d-found']/span")).getText());
+		
+	}
+
+}
