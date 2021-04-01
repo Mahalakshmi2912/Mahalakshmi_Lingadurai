@@ -1,0 +1,38 @@
+package week1.day2;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class SortingUsingCollection {
+
+	public static void main(String[] args) {
+		String[] input = {"HCL","Wipro","Aspire Systems","CTS"};
+		//Declare a String array and add the Strings values as (HCL, Wipro,  Aspire Systems, CTS)	
+		List<String> company = new ArrayList<String>();
+		company.add("HCL");
+		company.add("Wipro");
+		company.add("Aspire Systems");
+		company.add("CTS");
+		//get the length of the array
+		System.out.println(company.size());
+		//sort the array	
+		Collections.sort(company);
+		//Iterate it in the reverse order
+		Collections.reverse(company);
+		//print the array
+		for(int i=0;i<company.size();i++)
+		{
+			System.out.print(company.get(i) + ",");
+		}
+		
+		
+
+	}
+
+}
+
+Output:
+
+4
+Wipro,HCL,CTS,Aspire Systems,
