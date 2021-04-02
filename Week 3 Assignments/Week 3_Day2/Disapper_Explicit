@@ -1,0 +1,31 @@
+package week1.day2;
+
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class DisappearExplicit {
+
+	public static void main(String[] args) {
+		WebDriverManager.chromedriver().setup();
+		ChromeDriver driver = new ChromeDriver();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().window().maximize();
+		driver.get("http://www.leafground.com/pages/disapper.html");
+		WebDriverWait wait1 = new WebDriverWait(driver, Duration.ofSeconds(20));
+		wait1.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='show']//strong")));
+		System.out.println(driver.findElement(By.xpath("//div[@id='show']//strong")).getText());
+
+	}
+
+}
+
+Output:
+
+I know you can do it! Button is disappeared!
