@@ -1,0 +1,46 @@
+package week1.day2;
+
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class ExplicitTextChange {
+
+	public static void main(String[] args) {
+		WebDriverManager.chromedriver().setup();
+		ChromeDriver driver = new ChromeDriver();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().window().maximize();
+		driver.get("http://leafground.com/pages/TextChange.html");
+		WebDriverWait wait1 = new WebDriverWait(driver, Duration.ofSeconds(20));
+		wait1.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[text()='Click ME!']")));
+		driver.findElement(By.xpath("//button[text()='Click ME!']")).click();
+		String s= driver.switchTo().alert().getText();
+		if(s.equals("Click ME!"))
+		{
+			System.out.println("Text displayed in the alert: " + s);
+		}
+		
+	driver.quit();
+		
+		
+
+
+
+	}
+
+}
+
+
+
+Output:
+
+Text displayed in the alert: Click ME!
