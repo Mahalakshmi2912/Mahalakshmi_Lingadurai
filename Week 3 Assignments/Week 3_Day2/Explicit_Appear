@@ -1,0 +1,43 @@
+package week1.day2;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class AppearExplicit {
+
+	public static void main(String[] args) {
+		WebDriverManager.chromedriver().setup();
+		ChromeDriver driver = new ChromeDriver();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().window().maximize();
+		driver.get("http://www.leafground.com/pages/appear.html");
+		WebDriverWait wait1 = new WebDriverWait(driver, Duration.ofSeconds(20));
+		wait1.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//div[@class='flex']/button/b)[3]")));
+		List<WebElement> ele= driver.findElements(By.xpath("//div[@class='flex']/button/b"));
+		for(int i=0;i<ele.size();i++)
+		{
+			System.out.println(ele.get(i).getText());
+		}
+		
+
+
+	}
+
+}
+
+
+Output:
+Hey!
+We are five friends here
+Voila! I'm here Guys
+One of our friend is missing
+I know you can find him
