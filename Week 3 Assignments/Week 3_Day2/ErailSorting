@@ -1,0 +1,52 @@
+package week1.day2;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.internal.runners.model.EachTestNotifier;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class ErailSorting {
+
+	public static void main(String[] args) throws InterruptedException {
+		// Launch the browser
+		WebDriverManager.chromedriver().setup();
+		ChromeDriver driver = new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		// Launch the URL - https://erail.in/
+		driver.get("https://erail.in/");
+		// Uncheck the check box - sort on date
+		driver.findElement(By.xpath("//input[@id='chkSelectDateOnly']")).click();
+		// clear and type in the source station
+		driver.findElement(By.id("txtStationFrom")).clear();
+		driver.findElement(By.id("txtStationFrom")).sendKeys("Chennai Egmore", Keys.ENTER);
+		// clear and type in the destination station
+		driver.findElement(By.id("txtStationTo")).clear();
+		driver.findElement(By.id("txtStationTo")).sendKeys("Coimbatore Jn", Keys.ENTER);
+		// Find all the train names using xpath and store it in a list
+		List<WebElement> trainName = driver
+				.findElements(By.xpath("//table[@class='DataTable TrainList TrainListHeader']//tr/td[2]"));
+		// Use Java Collections sort to sort it and then print it
+		List<String> s = new ArrayList<String>();
+		for (int i = 0; i < trainName.size(); i++) {
+
+			s.add(trainName.get(i).getText());
+
+		}
+		Collections.sort(s);
+		System.out.println(s);
+	}
+
+}
+
+Output:
+
+[BJU ERS SPL, COIMBATORE EXP, DHN ALLP SPL, FESTIVAL SPL, JP CBE SUP SPL, KCVL FESTIVL SPL, MAS ALLP EXP, MAS CBE EXPRESS, MAS CBE EXPRESS, MAS CBE SFEXP, MAS CBE SHATABDI, MAS MAQ EXP, MAS MAQ SF EXP, MAS MAQ SPL, MAS MTP EXP, MAS TVC EXP, MAS TVC EXPRESS, MAS TVC SPL, PNBE ERS SPL, SCL TVC SPECIAL, SHM TVC SPL, TATA ERS SPL]
