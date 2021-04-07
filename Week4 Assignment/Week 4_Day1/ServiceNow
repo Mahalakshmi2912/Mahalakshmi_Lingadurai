@@ -1,0 +1,85 @@
+package Week4.day1;
+
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class ServiceNow {
+
+	public static void main(String[] args) throws InterruptedException {
+		WebDriverManager.chromedriver().setup();
+		ChromeDriver driver = new ChromeDriver();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().window().maximize();
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+		JavascriptExecutor javascript = (JavascriptExecutor) driver;
+		driver.get("https://dev68594.service-now.com/");
+		
+		//Go inside the frame
+		WebElement frame = driver.findElement(By.id("gsft_main"));
+		driver.switchTo().frame(frame);
+		
+		//Enter user name
+		driver.findElement(By.id("user_name")).sendKeys("admin");
+		
+		//Enter password
+		driver.findElement(By.id("user_password")).sendKeys("India@123");
+		
+		//click Login
+		driver.findElement(By.id("sysverb_login")).click();
+		
+		//Search “incident “ Filter Navigator
+		driver.findElement(By.xpath("//input[@id='filter']")).sendKeys("incident");
+		Thread.sleep(3000);
+		driver.findElement(By.xpath("(//ul[@class='sn-widget-list_v2 sn-widget-list_dense collapse in'])[3]//div[text()='All']")).click();
+		
+		//Click New button
+		driver.switchTo().frame("gsft_main");
+		driver.findElement(By.xpath("(//button[@type='submit'])[1]")).click();
+		
+		//Select a value for Caller and Enter value for short_description
+		WebElement caller = driver.findElement(By.xpath("//input[@id='sys_display.incident.caller_id']"));
+	    Actions a = new Actions(driver);
+	    a.doubleClick(caller).perform();
+		Thread.sleep(3000);
+		driver.findElement(By.xpath("//input[@id='sys_display.incident.caller_id']")).sendKeys(Keys.ARROW_DOWN,Keys.ARROW_DOWN,Keys.ARROW_DOWN,Keys.ENTER);
+		driver.findElement(By.xpath("//input[@id='incident.short_description']")).sendKeys("Description for service Now");
+		
+		//Read the incident number and save it a variable
+		String incidentNumber=driver.findElement(By.xpath("//input[@id='incident.number']")).getAttribute("value");
+		System.out.println("Incidenet Number: "+ incidentNumber);
+		
+		//Click on Submit button
+		driver.findElement(By.xpath("//button[@id='sysverb_insert']")).click();
+		
+		//Search the same incident number in the next search screen as below
+		driver.findElement(By.xpath("(//input[@class='form-control'])[1]")).sendKeys(incidentNumber);
+		driver.findElement(By.xpath("(//input[@class='form-control'])[1]")).sendKeys(Keys.ENTER);
+		
+		//Verify the incident is created successful
+		String text= driver.findElement(By.xpath("//a[@class='linked formlink']")).getText();
+		if(text.equals(incidentNumber))
+			System.out.println("Incident Created successfully");
+		else
+		{
+			System.out.println("Incident not Created");
+		}
+
+		
+	}
+
+}
+
+Output:
+-------
+Incidenet Number: INC0018813
+Incident Created successfully
