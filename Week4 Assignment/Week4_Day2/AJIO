@@ -1,0 +1,160 @@
+package Week4.day1;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class AJIO {
+
+	public static void main(String[] args) throws InterruptedException {
+		WebDriverManager.chromedriver().setup();
+		ChromeOptions options= new ChromeOptions();
+		options.addArguments("--disable-notifications");
+		ChromeDriver driver = new ChromeDriver();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		driver.manage().window().maximize();
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+		driver.get("https://www.ajio.com/shop/sale ");
+		
+		//2) Enter Bags in the Search field and Select Women Handbags 
+		driver.findElement(By.xpath("//input[@name='searchVal']")).sendKeys("bags",Keys.ENTER);
+		WebElement ele =driver.findElement(By.xpath("//label[@for='Women']"));
+		Actions a = new Actions(driver);
+		a.click(ele).build().perform();
+		
+		//Click on five grid.sen
+		driver.findElement(By.xpath("//div[@class='five-grid-container ']/div")).click();
+		
+		// Select SORT BY as "What's New"
+		driver.findElement(By.xpath("//div[@class='filter-dropdown']//option[4]")).click();
+		
+		//4) Click Price on the side menu and Enter Price Range Min as 3000 and Max as 5000
+		WebElement price = driver.findElement(By.xpath("(//span[@class='facet-left-pane-label'])[3]"));
+		Thread.sleep(3000);
+		a.click(price).build().perform();
+		driver.findElement(By.xpath("//input[@id='minPrice']")).sendKeys("3000");
+		driver.findElement(By.xpath("//input[@id='maxPrice']")).sendKeys("5000");
+		driver.findElement(By.xpath("(//button[@type='submit'])[2]")).click();
+		
+		//5) Click on the first product 
+		driver.findElement(By.xpath("(//div[@class='preview']//img)[1]")).click();
+		
+		//6) Get the actual price, coupon code and discount price
+		Set allWindow= driver.getWindowHandles();
+		List<String> l = new ArrayList<String>(allWindow);
+		driver.switchTo().window(l.get(1));
+		System.out.println("Actual Price: "+driver.findElement(By.xpath("//div[@class='prod-price-section ']/div")).getText());
+		String AP=driver.findElement(By.xpath("//div[@class='prod-price-section ']/div")).getText();
+		AP=AP.replaceAll("[^0-9]","");
+		int a1= Integer.parseInt(AP);
+		//Get coupon code
+		String Cuponcode=driver.findElement(By.xpath("//div[@class='promo-title']")).getText();
+		Cuponcode=Cuponcode.replace("Use Code","");
+		Cuponcode=Cuponcode.replaceAll("\\s", "");
+		System.out.println("Cuponcode: "+Cuponcode);
+		//Get Discount price
+		try
+		{
+		WebElement discount= driver.findElement(By.xpath("//div[@class='promo-desc']"));
+		String discountText= discount.getText();
+		System.out.println("Discount Price:" +discountText );
+		}
+		catch(Exception e)
+		{
+		
+		}
+		
+		//Check the availability of the product for pincode 560043, print the expected delivery date if it is available
+		driver.findElement(By.xpath("//span[@class='edd-pincode-msg-details edd-pincode-msg-details-pointer edd-pincode-msg-details-text-color']")).click();
+		driver.findElement(By.xpath("//input[@class='edd-pincode-modal-text']")).sendKeys("560043");
+		driver.findElement(By.xpath("//button[@class='edd-pincode-modal-submit-btn']")).click();
+		System.out.println("Expected Delivery Date: "+ driver.findElement(By.xpath("//span[@class='edd-message-success-details-highlighted']")).getText());
+		
+		//Click on Other Informations under Product Details and Print the Customer Care details
+		driver.findElement(By.xpath("//i[@class='ic-angle-down']")).click();
+		System.out.println("Customer Care Address: "+driver.findElement(By.xpath("//div[text()='Customer Care Address']/../div[3]")).getText());
+		
+		//9) Click on ADD TO BAG and then GO TO BAG 
+		driver.findElement(By.xpath("//div[@class='pdp-addtocart-button']")).click();
+		WebElement cart= driver.findElement(By.xpath("//div[@class='ic-cart ']"));
+		Thread.sleep(3000);
+		a.click(cart).build().perform();
+		
+		//10) Check the Order Total before apply coupon 
+		Thread.sleep(3000);
+		System.out.println("Ordered amount: "+ driver.findElement(By.xpath("//div[@class='net-price best-price-strip']")).getText()); 
+		
+		//11) Enter Coupon Code and Click Apply 
+		driver.findElement(By.xpath("//input[@class='coupon-code-input-vhr-not-apld  ']")).sendKeys(Cuponcode);
+		driver.findElement(By.xpath("//button[text()='Apply']")).click();
+		
+		//12) Print the warning message if the product is not eligible discount
+		System.out.println("Coupon Applied: "+driver.findElement(By.xpath("//div[@class='product-card navigation-product-card apply-coupon applied-product-card']//p[2]/span")).getText());
+		
+		//12(a) Verify the bill amount is matching with the discount price or not 
+		String savedAmount= driver.findElement(By.xpath("//div[@class='product-card navigation-product-card apply-coupon applied-product-card']//p[1]")).getText();
+		savedAmount=savedAmount.replace("You Save : Rs. ","");
+		System.out.println("Saved Amount: "+savedAmount);
+		double b=Double.parseDouble(savedAmount);
+		double c= a1-b;
+		System.out.println("Final price: " + c);
+		
+		String totalAmount= driver.findElement(By.xpath("//div[@class='net-price best-price-strip']")).getText();
+		totalAmount=totalAmount.replace("Rs.","");
+		totalAmount=totalAmount.replace(",","");
+        double b1=Double.parseDouble(totalAmount);
+        if(c==b1)
+        {
+        	System.out.println("Bill amount is matching with the discount");
+        }
+		
+        else
+        {
+        	System.out.println("Bill amount not matching with the discount");
+        }
+	
+		
+		//Click on delete and delete the item from bag
+        WebElement delete=driver.findElement(By.xpath("//div[@class='delete-btn']"));
+        Thread.sleep(3000);
+        delete.click();
+        driver.findElement(By.xpath("//div[text()='DELETE']")).click();
+        System.out.println("After delete the item from bag: "+ driver.findElement(By.xpath("//p[@class='empty-msg']")).getText());
+        
+        //close all the browser
+        driver.quit();
+		
+
+		
+		
+	}
+
+}
+
+
+Output:
+------
+Actual Price: Rs. 3,450
+Cuponcode: SPECIAL
+Discount Price:Extra Upto 23% Off on 2490 and Above. View Products>
+Expected Delivery Date: 13 Apr
+Customer Care Address: AJIO, c/o Reliance Retail Limited, SS Plaza, 74/2 Outer Ring Road, 29th Main Road, BTM 1st Stage, BTM Layout, Bangalore 560068, Karnataka, INDIA. Ph. 1800-889-9991. E-mail - customercare@ajio.com
+Ordered amount: Rs. 3,450.00
+Coupon Applied: SPECIAL
+Saved Amount: 793.50
+Final price: 2656.5
+Bill amount is matching with the discount
+After delete the item from bag: Your Shopping Bag is Empty!!
