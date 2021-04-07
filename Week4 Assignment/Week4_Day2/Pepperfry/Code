@@ -1,0 +1,141 @@
+package Week4.day1;
+
+import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class Pepperfry {
+
+	public static void main(String[] args) throws InterruptedException, IOException {
+		WebDriverManager.chromedriver().setup();
+		ChromeOptions options= new ChromeOptions();
+		options.addArguments("--disable-notifications");
+		ChromeDriver driver= new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(10,TimeUnit.SECONDS);
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+		
+		//Hit URL
+		driver.get("https://www.pepperfry.com/");
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//div[@id='reg_login_box']//a[@class='popup-close'])[1]")));
+		driver.findElement(By.xpath("(//div[@id='reg_login_box']//a[@class='popup-close'])[1]")).click();
+		driver.switchTo().frame("webklipper-publisher-widget-container-notification-frame");
+		driver.findElement(By.id("webklipper-publisher-widget-container-notification-close-div")).click();
+		driver.switchTo().defaultContent();
+		
+		//Mouseover on Furniture and click Office Chairs under Chairs
+		Actions a = new Actions(driver);
+		WebElement furniture= driver.findElement(By.xpath("//div[@id='menu_wrapper']//a[text()='Furniture']"));
+		a.moveToElement(furniture).build().perform();
+		Thread.sleep(3000);
+		driver.findElement(By.xpath("//a[text()='Office Chairs']")).click();
+		
+		//click Executive Chairs
+		WebElement executiveChair = driver.findElement(By.xpath("//ul[@class='clip-main-cat-wrpr pf-center pf-padding-0 pf"
+				+ "-margin-10 clip-main-wrap-cat center-xs']//img[@alt='Executive Chairs']"));
+		a.click(executiveChair).build().perform();
+		
+		//Change the minimum Height to 50 in under Dimensions
+		Thread.sleep(2000);
+		driver.findElement(By.xpath("(//ul[@class='clip__filter-dimension']//div[@class='clip__filter-dimension-input-holder']/input[@type='number'])[1]")).clear();
+		driver.findElement(By.xpath("(//ul[@class='clip__filter-dimension']//div[@class='clip__filter-dimension-input-holder']/input[@type='number'])[1]")).sendKeys("50");
+		
+		//Add Galician High Back Executive Chair In Black Colour" chair to Wishlist
+		driver.switchTo().frame("webklipper-publisher-widget-container-notification-frame");
+		driver.findElement(By.xpath("//span[@class='wewidgeticon we_close icon-large']")).click();
+		driver.switchTo().defaultContent();
+		WebElement glaician = driver.findElement(By.xpath("//a[@data-productname='Galician High Back Executive Chair in Black Colour']"));
+		JavascriptExecutor javascript = (JavascriptExecutor) driver;
+		javascript.executeScript("arguments[0].click();", glaician);
+		
+		//Mouseover on Bedroom and Click Study tables
+		WebElement bedRoom= driver.findElement(By.xpath("//a[text()='Bedroom']"));
+		Thread.sleep(3000);
+		a.moveToElement(bedRoom).perform();
+		Thread.sleep(3000);
+		//WebElement studyTable= driver.findElement(By.xpath("(//div[text()='Tables'])[3]/..//a[text()='Study Tables']"));
+		//javascript.executeScript("arguments[0].click();", studyTable);
+		driver.findElement(By.linkText("Study Tables")).click();
+		
+		// Select Spacewood as Brand
+		WebElement spaceWood=driver.findElement(By.xpath("//input[@id='brandsnameSpacewood']/../input"));
+		Thread.sleep(3000);
+		javascript.executeScript("arguments[0].click();", spaceWood);
+		
+		//Select Price as 7000 to 8000
+		WebElement price= driver.findElement(By.xpath("//input[@id='price7000-8000']"));
+		javascript.executeScript("arguments[0].click();", price);
+		
+		//Add "SOS Carter Study Table In Lorraine Walnut & Silver Grey Finish to Wishlist
+		WebElement sosCarter=driver.findElement(By.xpath("//a[@data-productname='SOS Carter Study Table in Lorraine walnut & silver grey Finish']"));
+		javascript.executeScript("arguments[0].click();", sosCarter);
+		
+		//Verify the number of items in the Wishlist
+		WebElement totalItems=driver.findElement(By.xpath("(//span[@class='header-nav-cnt count_alert'])[1]"));
+		Thread.sleep(3000);
+	    System.out.println("Number of items present in the wishlist: " +totalItems.getText());
+	    
+	    //11) Navigate to Wishlist
+	    WebElement navigateToWishlist=driver.findElement(By.xpath("//a[@class='wishlist_bar']"));
+	    Thread.sleep(3000);
+	    navigateToWishlist.click();
+	    
+	    //12) Move Table only to Cart from Wishlist
+	    driver.findElement(By.xpath("(//div[@class='mini_cart capitalize active']//div[@class='item_details_holder']//a[@data-tooltip='Add to Cart'])[1]")).click();
+	    
+	    //13) Click Proceed to Pay Securely
+	    driver.findElement(By.xpath("//a[text()='Proceed to pay securely ']")).click();
+	    
+	    //14) Enter Pincode as 600028 in Delivery & Assembly Details and click Go
+	    try
+	    {
+	    driver.findElement(By.xpath("//input[@id='pin_code']")).sendKeys("600028");
+	    }
+	    catch(StaleElementReferenceException e)
+	    {
+	    	driver.findElement(By.xpath("//input[@id='pin_code']"));
+	    }
+	    driver.findElement(By.xpath("//input[@id='pin_check']")).click();
+	    
+	    //14) Click Place Order
+	    driver.findElement(By.xpath("(//a[text()='PLACE ORDER'])[1]")).click();
+	    
+	    //15) Capture a screenshot by Clicking on Order Summary
+	    File source= driver.getScreenshotAs(OutputType.FILE);
+	    File destination= new File("Pepperfry order amount.png");
+	    FileUtils.copyFile(source, destination);
+	    
+	    //16) Close the browser 
+	    driver.close();
+
+	    
+	    
+	  
+	    
+	    
+	}
+
+}
+	
+  
+ Output:
+ Number of items present in the wishlist: 2
+	
+
+	
+
