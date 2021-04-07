@@ -103,7 +103,8 @@ public class SnapDeal {
 		String firstPumaPriceText = firstPricePuma.getText();
 		firstPumaPriceText = firstPumaPriceText.replaceAll("[^0-9]", "").replaceAll("\\s", "");
 		int pumaFirstValue = Integer.parseInt(firstPumaPriceText);
-
+try
+{
 		for (int i = 0; i < sortedPuma.size(); i++) {
 
 			String textPuma = sortedPuma.get(i).getText();
@@ -115,6 +116,11 @@ public class SnapDeal {
 				System.out.println(pumaText1 + "--->" + i);
 			}
 		}
+}
+catch(Exception e)
+{
+	driver.findElements(By.xpath("//span[@class='lfloat product-price']"));	
+}
 
 		// Mouse Hover on puma Blue Training shoes
 		WebElement pumaTraining = driver.findElement(By.xpath("(//img[@title='Puma Blue Training Shoes'])[1]"));
