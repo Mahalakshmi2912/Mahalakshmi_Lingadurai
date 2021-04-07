@@ -1,0 +1,84 @@
+package Week4.day1;
+
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class Amazon {
+
+	public static void main(String[] args) {
+		WebDriverManager.chromedriver().setup();
+		ChromeDriver driver= new ChromeDriver();
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		WebDriverWait wait = new WebDriverWait(driver,Duration.ofSeconds(30));
+		
+		//Launch URL: https://www.amazon.in/
+		driver.get("https://www.amazon.in/");
+		
+		//Type "one plus 7 pro mobiles" in Search Box and Enter
+		driver.findElement(By.id("twotabsearchtextbox")).sendKeys("one plus 7 pro mobiles",Keys.ENTER);
+		
+		// Print the price of the first resulting mobile
+		System.out.println("Price of first resulting mobile: " + driver.findElement(By.xpath("(//span[@class='a-price-whole'])[1]")).getText());
+		
+		//Click on the Mobile (First resulting) image
+		driver.findElement(By.xpath("(//div[@class='a-section aok-relative s-image-fixed-height']/img)[1]")).click();
+		
+		//Switch to the new window
+		Set allWindow=driver.getWindowHandles();
+		List<String> windowSwitch = new ArrayList<String>(allWindow);
+		driver.switchTo().window(windowSwitch.get(1));
+		
+		//Print the number of customer ratings
+		System.out.println("Customer Rating: "+ driver.findElement(By.xpath("(//a[@id='acrCustomerReviewLink']/span)[1]")).getText());
+		
+		//Click 'Add to Cart'
+		driver.findElement(By.id("add-to-cart-button")).click();
+		
+		//Confirm "Added to Cart" text message appeared
+		String message=driver.findElement(By.xpath("//div[@class='a-section a-spacing-none a-padding-base attach-"
+				+ "primary-atc-confirm-box']//div[@class='a-text-center a-fixed-left-grid-col a-col-left']//h4")).getText();
+		System.out.println(message);
+		if(message.equals("Added to Cart"))
+			System.out.println("Added to Cart text message appeared successfuly");
+		
+		// Click on Proceed to checkout
+		driver.findElement(By.xpath("//span[@id='attach-sidesheet-checkout-button']//input")).click();
+		
+		// Confirm the title is "Amazon Sign In"
+		System.out.println("Title of amazon sign-in Page: "+ driver.getTitle());
+		
+		//Click Continue (without entering mobile number/email)
+		driver.findElement(By.xpath("//input[@id='continue']")).click();
+		
+		
+		//Verify the error message: Enter your email or mobile phone number
+		System.out.println("After click on continue button,the following message is displayed: "+ driver.findElement(By.xpath("(//div[@id='auth-email-missing-alert']//div)"
+				+ "[2]")).getText());
+		
+		// Close both browsers
+		driver.quit();
+		
+		
+
+	}
+
+}
+
+Output:
+Price of first resulting mobile: 52,999
+Customer Rating: 25,146 ratings
+Added to Cart
+Added to Cart text message appeared successfuly
+Title of amazon sign-in Page: Amazon Sign In
+After click on continue button,the following message is displayed: Enter your email or mobile phone number
