@@ -26,67 +26,91 @@ public class MergeLead {
 		driver.manage().window().maximize();
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
 		driver.get("http://leaftaps.com/opentaps/control/main");
+
 		// Enter the username
 		driver.findElement(By.id("username")).sendKeys("DemoSalesManager");
+
 		// Enter the password
 		driver.findElement(By.id("password")).sendKeys("crmsfa");
+
 		// Click Login
 		driver.findElement(By.className("decorativeSubmit")).click();
+
 		// Click crm/sfa link
 		driver.findElement(By.linkText("CRM/SFA")).click();
+
 		// Click Leads link
 		driver.findElement(By.xpath("//li[@class='sectionTabButtonUnselected']//a[text()='Leads']")).click();
+
 		// Click Merge leads
 		driver.findElement(By.xpath("//ul[@class='shortcuts']//a[text()='Merge Leads']")).click();
+
 		// Click on Icon near From Lead
 		driver.findElement(By.xpath("(//img[@alt='Lookup'])[1]")).click();
+
 		// Move to new window
 		Set allWindow = driver.getWindowHandles();
 		List<String> l = new ArrayList<String>(allWindow);
 		driver.switchTo().window(l.get(1));
 		driver.manage().window().maximize();
+
 		// Enter Lead ID
-		driver.findElement(By.xpath("//input[@name='id']")).sendKeys("10074");
+		driver.findElement(By.xpath("//input[@name='id']")).sendKeys("10");
+
 		// Click Find Leads button
 		driver.findElement(By.xpath("//button[@class='x-btn-text']")).click();
+
 		// Click First Resulting lead
 		Thread.sleep(3000);
 		driver.findElement(By.xpath("(//table[@class='x-grid3-row-table'])[1]//tr[1]/td[1]//a")).click();
+
 		// Switch back to primary window
 		driver.switchTo().window(l.get(0));
 		WebElement ele = driver
 				.findElement(By.xpath("(//input[@class='XdijitInputField dijitInputFieldValidationNormal'])[1]"));
 		String text = ele.getText();
+
 		// Click on Icon near To Lead
 		driver.findElement(By.xpath("(//img[@alt='Lookup'])[2]")).click();
 		Set allWindowtwo = driver.getWindowHandles();
 		List<String> ltwo = new ArrayList<String>(allWindowtwo);
 		driver.switchTo().window(ltwo.get(1));
 		driver.manage().window().maximize();
+
 		// Enter Lead ID
-		driver.findElement(By.xpath("//input[@name='id']")).sendKeys("50");
+		driver.findElement(By.xpath("//input[@name='id']")).sendKeys("20");
+
 		// Click Find Leads button
 		driver.findElement(By.xpath("//button[@class='x-btn-text']")).click();
+
 		// Click First Resulting lead
 		Thread.sleep(3000);
 		driver.findElement(By.xpath("(//table[@class='x-grid3-row-table'])[1]//tr[1]/td[1]//a")).click();
+
 		// Switch back to primary window
 		driver.switchTo().window(ltwo.get(0));
+
 		// Click Merge
 		driver.findElement(By.xpath("//a[text()='Merge']")).click();
+
 		// Accept Alert
 		driver.switchTo().alert().accept();
+
 		// Click Find Leads link
 		driver.findElement(By.xpath("//a[text()='Find Leads']")).click();
+
 		// Enter From Lead ID
 		Thread.sleep(3000);
-		driver.findElement(By.xpath("//input[@name='id']")).sendKeys("10074");
+		driver.findElement(By.xpath("//input[@name='id']")).sendKeys("100");
+
 		// Click Find Leads button
 		driver.findElement(By.xpath("//button[text()='Find Leads']")).click();
+
 		// Verify message "No records to display" in the Lead List. This message
 		// confirms that the successful merge of leads
 		Thread.sleep(3000);
 		System.out.println("Message: " + driver.findElement(By.xpath("//div[@class='x-paging-info']")).getText());
+
 		// Close the browser (Do not log out)
 		driver.close();
 
